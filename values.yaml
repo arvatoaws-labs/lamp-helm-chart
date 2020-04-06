@@ -49,17 +49,55 @@ ingress:
   #    hosts:
   #      - chart-example.local
 
-resources: {}
-  # We usually recommend not to specify default resources and to leave this as a conscious
-  # choice for the user. This also increases chances charts run on environments with little
-  # resources, such as Minikube. If you do want to specify resources, uncomment the following
-  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-  # limits:
-  #   cpu: 100m
-  #   memory: 128Mi
-  # requests:
-  #   cpu: 100m
-  #   memory: 128Mi
+php:
+  image:
+    repository: php
+    tag: 7.4-apache
+    pullPolicy: Always
+
+php:
+  image:
+    repository: phpmyadmin
+    tag: "5.0"
+    pullPolicy: Always
+
+mysql:
+  ## mysql.user MySQL user
+  user: selbstauskunft
+
+  ## mysql.password MySQL user password
+  password: va0sHQ3Uwbr7FISqcr
+
+  ## mysql.database MySQL user database
+  database: selbstauskunft
+
+  ## mysql.repository MySQL image - choose one of the official images
+  ##     [mysql](https://hub.docker.com/_/mysql/)
+  ##     [mariadb](https://hub.docker.com/_/mariadb/)
+  ##     [percona](https://hub.docker.com/_/percona/)
+  repository: "mysql"
+
+  ## mysql.tag MySQL image tag
+  tag: "5.7"
+
+  ## mysql.imagePullPolicy Image pull policy
+  imagePullPolicy: Always
+
+  ## mysql.sockets Enables communication between MySQL and PHP via sockets instead of TCP
+  sockets: false
+
+  ## mysql.resources Resource requests/limits
+  resources: false
+  #  requests:
+  #    cpu: 1m
+  #    memory: 1Mi
+
+# this section allows to inject external secrets into the lamp deployment
+externalSecrets:
+  enabled: false
+  backendType: systemManager
+  mapping:
+#    db-root-username: /dev/wordpress-1/DB/username
 
 nodeSelector: {}
 
