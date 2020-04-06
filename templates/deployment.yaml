@@ -1,67 +1,49 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "lamp-helm-chart.fullname" . }}
+  name: {{ include "lamp.fullname" . }}
   labels:
-    {{- include "lamp-helm-chart.labels" . | nindent 4 }}
+    {{- include "lamp.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      {{- include "lamp-helm-chart.selectorLabels" . | nindent 6 }}
+      {{- include "lamp.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
-        {{- include "lamp-helm-chart.selectorLabels" . | nindent 8 }}
+        {{- include "lamp.selectorLabels" . | nindent 8 }}
     spec:
     {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
     {{- end }}
-      serviceAccountName: {{ include "lamp-helm-chart.serviceAccountName" . }}
+      serviceAccountName: {{ include "lamp.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
-        - name: {{ .Chart.Name }}-php
-          image: "{{ .Values.php.image.repository }}:{{ .Values.php.image.tag }}"
-          imagePullPolicy: {{ .Values.php.image.pullPolicy }}
-          env:
-          - name: MYSQL_HOST
-            value: {{ $.Values.externalDatabase.host | quote }}
-          - name: MYSQL_PORT
-            value: {{ $.Values.externalDatabase.port | quote }}
-          - name: MYSQL_DATABASE
-            value: {{ $.Values.externalDatabase.database | quote }}
-          - name: MYSQL_USER
-            value: {{ $.Values.externalDatabase.user | quote }}
-          - name: MYSQL_PASSWORD
-            value: {{ $.Values.externalDatabase.password | quote }}
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
-          - name: http
-            containerPort: 8080
-            protocol: TCP
-          resources:
-{{ toYaml .Values.php.resources | indent 12 }}
-        - name: {{ .Chart.Name }}-phpmyadmin
-          image: "{{ .Values.phpmyadmin.image.repository }}:{{ .Values.phpmyadmin.image.tag }}"
-          imagePullPolicy: {{ .Values.phpmyadmin.image.pullPolicy }}
+            - name: http
+              containerPort: 8080
+              protocol: TCP
           env:
-          - name: MYSQL_HOST
-            value: {{ $.Values.externalDatabase.host | quote }}
-          - name: MYSQL_PORT
-            value: {{ $.Values.externalDatabase.port | quote }}
-          - name: MYSQL_DATABASE
-            value: {{ $.Values.externalDatabase.database | quote }}
-          - name: MYSQL_USER
-            value: {{ $.Values.externalDatabase.user | quote }}
-          - name: MYSQL_ROOT_PASSWORD
-            value: {{ $.Values.externalDatabase.rootPassword | quote }}
-          ports:
-          - name: http
-            containerPort: 9999
-            protocol: TCP
+          {{- range $key, $value := .Values.externalSecrets.mapping }}
+            - name: {{ $key | upper | replace "-" "_" }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "wordpress-bedrock.fullname" $ }}
+                  key: {{ $key }}
+        {{- end }}
+      {{- if .Values.extraEnv }}
+{{ toYaml .Values.extraEnv | indent 12 }}
+      {{- end }}
           resources:
-{{ toYaml .Values.php.resources | indent 12 }}
+            {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

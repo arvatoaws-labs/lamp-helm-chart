@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "lamp-helm-chart.fullname" . }}
+  name: {{ include "lamp.fullname" . }}
   labels:
-    {{- include "lamp-helm-chart.labels" . | nindent 4 }}
+    {{- include "lamp.labels" . | nindent 4 }}
 spec:
   type: {{ .Values.service.type }}
   ports:
@@ -12,4 +12,4 @@ spec:
       protocol: TCP
       name: http
   selector:
-    {{- include "lamp-helm-chart.selectorLabels" . | nindent 4 }}
+    {{- include "lamp.selectorLabels" . | nindent 4 }}
