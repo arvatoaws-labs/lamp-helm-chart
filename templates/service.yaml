@@ -1,12 +1,9 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "wordpress.fullname" . }}
+  name: {{ include "lamp-helm-chart.fullname" . }}
   labels:
-    app.kubernetes.io/name: {{ include "wordpress.name" . }}
-    helm.sh/chart: {{ include "wordpress.chart" . }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    {{- include "lamp-helm-chart.labels" . | nindent 4 }}
 spec:
   type: {{ .Values.service.type }}
   ports:
@@ -14,16 +11,5 @@ spec:
       targetPort: http
       protocol: TCP
       name: http
-{{- if ( .Values.monitoring.enabled ) }}
-    - port: {{ .Values.exporter.nginx.port }}
-      targetPort: nginx-metrics
-      protocol: TCP
-      name: nginx-metrics
-    - port: {{ .Values.exporter.phpfpm.port }}
-      targetPort: php-fpm-metrics
-      protocol: TCP
-      name: php-fpm-metrics
-{{ end }}
   selector:
-    app.kubernetes.io/name: {{ include "wordpress.name" . }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
+    {{- include "lamp-helm-chart.selectorLabels" . | nindent 4 }}

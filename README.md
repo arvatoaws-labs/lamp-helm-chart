@@ -1,6 +1,0 @@
-# lamp-helm-chart
-
-
-
-Features
-* 
