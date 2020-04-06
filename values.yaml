@@ -48,7 +48,7 @@ ingress:
 php:
   image:
     repository: php
-    tag: 7.4-apache
+    tag: "7.4-apache"
     pullPolicy: Always
 
 phpmyadmin:

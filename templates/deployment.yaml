@@ -23,7 +23,7 @@ spec:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
         - name: {{ .Chart.Name }}-php
-          image: "{{ .Values.php.image.repository }}:{{ .Values.image.php.tag }}"
+          image: "{{ .Values.php.image.repository }}:{{ .Values.php.image.tag }}"
           imagePullPolicy: {{ .Values.php.image.pullPolicy }}
           env:
           - name: MYSQL_HOST
@@ -43,8 +43,8 @@ spec:
           resources:
 {{ toYaml .Values.php.resources | indent 12 }}
         - name: {{ .Chart.Name }}-phpmyadmin
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          image: "{{ .Values.phpmyadmin.image.repository }}:{{ .Values.phpmyadmin.image.tag }}"
+          imagePullPolicy: {{ .Values.phpmyadmin.image.pullPolicy }}
           env:
           - name: MYSQL_HOST
             value: {{ $.Values.externalDatabase.host | quote }}
