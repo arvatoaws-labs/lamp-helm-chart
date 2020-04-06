@@ -23,8 +23,8 @@ spec:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
         - name: {{ .Chart.Name }}-php
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          image: "{{ .Values.php.image.repository }}:{{ .Values.image.php.tag }}"
+          imagePullPolicy: {{ .Values.php.image.pullPolicy }}
           env:
           - name: MYSQL_HOST
             value: {{ $.Values.externalDatabase.host | quote }}
@@ -39,6 +39,26 @@ spec:
           ports:
           - name: http
             containerPort: 8080
+            protocol: TCP
+          resources:
+{{ toYaml .Values.php.resources | indent 12 }}
+        - name: {{ .Chart.Name }}-phpmyadmin
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+          - name: MYSQL_HOST
+            value: {{ $.Values.externalDatabase.host | quote }}
+          - name: MYSQL_PORT
+            value: {{ $.Values.externalDatabase.port | quote }}
+          - name: MYSQL_DATABASE
+            value: {{ $.Values.externalDatabase.database | quote }}
+          - name: MYSQL_USER
+            value: {{ $.Values.externalDatabase.user | quote }}
+          - name: MYSQL_ROOT_PASSWORD
+            value: {{ $.Values.externalDatabase.rootPassword | quote }}
+          ports:
+          - name: http
+            containerPort: 9999
             protocol: TCP
           resources:
 {{ toYaml .Values.php.resources | indent 12 }}
