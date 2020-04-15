@@ -11,5 +11,5 @@ spec:
     - name: echo
       image: busybox
       command: ['echo']
-      args: ['Peter']
+      args: ['Test Okay!']
   restartPolicy: Never
