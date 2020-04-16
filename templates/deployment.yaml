@@ -36,7 +36,7 @@ spec:
             - name: {{ $key | upper | replace "-" "_" }}
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "wordpress-bedrock.fullname" $ }}
+                  name: {{ template "lamp.fullname" $ }}
                   key: {{ $key }}
         {{- end }}
       {{- if .Values.extraEnv }}
