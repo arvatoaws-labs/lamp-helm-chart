@@ -66,6 +66,13 @@ extraEnv: []
 #         key: FOO
 #         name: secret-resource
 
+dbHost: 
+dbPort:
+  - 3306
+dbUser: 
+dbPassword: 
+dbDatabase: 
+
 nodeSelector: {}
 
 tolerations: []
