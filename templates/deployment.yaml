@@ -31,6 +31,9 @@ spec:
             - name: http
               containerPort: 80
               protocol: TCP
+            - name: https
+              containerPort: 443
+              protocol: TCP
           env:
           {{- range $key, $value := .Values.externalSecrets.mapping }}
             - name: {{ $key | upper | replace "-" "_" }}
